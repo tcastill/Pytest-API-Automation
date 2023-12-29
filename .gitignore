@@ -1,0 +1,9 @@
+htmlcov/
+allure-report/
+allure_test_result/
+venv/
+.pytest_cache/
+.coverage
+report.html
+assets
+report

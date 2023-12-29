@@ -1,0 +1,11 @@
+pytest~=7.4.3
+pandas~=2.1.4
+tabulate~=0.9.0
+allure-pytest~=2.13.2
+ConfigArgParse~=1.2.3
+pytest-cov~=2.10.1
+pytest-randomly~=3.4.1
+pytest-xdist~=3.5.0
+pytest-rerunfailures~=9.1.1
+requests~=2.31.0
+pytest-html-reporter~=0.2.9
