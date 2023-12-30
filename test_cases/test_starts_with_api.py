@@ -31,7 +31,8 @@ def test_starts_with(set_up):
     valid_words = []
     assert response.status_code == config.SUCCESSFUL
 
-    suggested_values = list(map(lambda item_word: [item_word[config.WORD], item_word[config.SCORE]], response_body))
+    # suggested_values = list(map(lambda item_word: [item_word[config.WORD], item_word[config.SCORE]], response_body))
+    suggested_values = [[item_word[config.WORD], item_word[config.SCORE]] for item_word in response_body]
     for word, score in suggested_values:
         first, *other, fourth = word.lower()
         words.append([word, score])
