@@ -56,5 +56,3 @@ Skip tagging tests
 Skip by tag:                                 # @pytest.mark.skip("Skipping as this functionality is broken. Develper is fixing it")
 Skip by condition:                           # @pytest.mark.skipif(a>100), reason = "Skipping due to limit reached")    
 ```
-
-

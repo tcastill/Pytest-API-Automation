@@ -14,10 +14,10 @@ logger.setLevel(logging.INFO)
 @allure.title("Prepare for the test")
 def set_up():
     ...  # set up
-    print("This wille execute before test cases")
+    logger.info("This will execute before test cases")
     yield
     ...  # tear down
-    print("Tests has completed")
+    logger.info("Tests has completed")
 
 
 @pytest.mark.sw
@@ -27,17 +27,30 @@ def test_starts_with(set_up):
     response = requests.get(f"{config.BASE_URL}{config.SPELLED_WITH_FILTER}{query}")
     response_body = response.json()
 
-    if response.status_code == 200:
-        print("Checking words that starts with")
-        assert query[0].lower() == 't', "First letter did not start with a t"
-        assert query[-1].lower() == 'k', "First letter did not start with a k"
-
-    allure_add_text(response)
-
     words = []
-    for word in response_body:
-        words.append([word[config.WORD], word[config.SCORE]])
+    valid_words = []
+    assert response.status_code == config.SUCCESSFUL
+
+    suggested_values = list(map(lambda item_word: [item_word[config.WORD], item_word[config.SCORE]], response_body))
+    for word, score in suggested_values:
+        first, *other, fourth = word.lower()
+        words.append([word, score])
+        assert first == 't', "First letter did not start with a t"
+        assert fourth == 'k', "First letter did not start with a k"
+        assert word.isalpha(), "The letters must be characters"
+        assert len(word) == 4, "All letters should equal 4"
+
+        dictionary_response = requests.get(f"{config.DICTIONARY_URI}{word}")
+        if dictionary_response.status_code == config.SUCCESSFUL:
+            valid_words.append(word)
+
     build_chart(words)
+    print(valid_words)
+    allure.attach(
+        ' '.join(map(str, valid_words)),
+        'Valid Words',
+        attachment_type=allure.attachment_type.TEXT,
+        extension=config.TXT_TYPE)
 
 
 def build_chart(data):
@@ -46,13 +59,13 @@ def build_chart(data):
         tabulate(data, headers=col_names),
         'Chart',
         attachment_type=allure.attachment_type.TEXT,
-        extension='txt')
+        extension=config.TXT_TYPE)
 
 
 def allure_add_text(data):
     allure.attach(
-        body=data.text.encode('utf8'),
-        name=f'the thing'
+        body=data.text.encode(config.UTF8),
+        name=f'Request URL'
              f'{data.request.url}',
         attachment_type=allure.attachment_type.TEXT,
-        extension='txt')
+        extension=config.TXT_TYPE)
