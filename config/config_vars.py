@@ -2,14 +2,12 @@
 NUM_RUNS = 1
 TEST_SKIP = True
 
-# Columns
-
-
 # API
 APPLICATION_JSON = 'application/json'
 CONTENT_TYPE = 'Content-Type'
 TXT_TYPE = 'txt'
 MEANINGS = 'meanings'
+DEFINITION = 'definition'
 DEFINITIONS = 'definitions'
 
 # ENDPOINTS
@@ -33,6 +31,8 @@ UTF8 = 'utf8'
 WORD = 'word'
 SCORE = 'score'
 NUMBER_OF_SYLLABULS = 'numSyllables'
+NAME = 'name'
+DESCRIPTION = 'description'
 
 # Restricted Characters
 SPECIAL_CHARACTERS = '!@#$%^&*()-+?_=,<>/'

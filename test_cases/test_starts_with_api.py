@@ -26,31 +26,31 @@ def api_internal_error(exception):
 
 @pytest.mark.sw
 @allure.title("API Stars With Query")
-def test_starts_with(set_up):
-    query = 't??k'
-    response = requests.get(f"{config.BASE_URL}{config.SPELLED_WITH_FILTER}{query}")
+@pytest.mark.parametrize("test_word, error", [("t??k", "The API returned a 500 error")])
+def test_starts_with(set_up, test_word, error):
+    response = requests.get(f"{config.BASE_URL}{config.SPELLED_WITH_FILTER}{test_word}")
     response_body = response.json()
 
     words = []
     valid_words = []
     assert response.status_code == config.SUCCESSFUL
 
-    # suggested_values = list(map(lambda item_word: [item_word[config.WORD], item_word[config.SCORE]], response_body))
     suggested_values = [[item_word[config.WORD], item_word[config.SCORE]] for item_word in response_body]
     for word, score in suggested_values:
         first, *other, fourth = word.lower()
         words.append([word, score])
-        assert first == 't', "First letter did not start with a t"
-        assert fourth == 'k', "First letter did not start with a k"
-        assert word.isalpha(), "The letters must be characters"
-        assert len(word) == 4, "All letters should equal 4"
+        assert first == test_word[0], "First letter did not start with a t"
+        assert fourth == test_word[-1], "First letter did not start with a k"
+        assert word.isalpha(), "The letters must be valid characters"
+        assert len(word) == len(test_word), "All letters did not return the same letter count"
 
         dictionary_response = requests.get(f"{config.DICTIONARY_URI}{word}")
         if dictionary_response.status_code == config.SUCCESSFUL:
-            valid_words.append([word, dictionary_response.json()[0]['meanings'][0]['definitions'][0]['definition']])
+            valid_words.append([word,
+                                dictionary_response.json()[0][config.MEANINGS][0][config.DEFINITIONS][0][config.DEFINITION]])
         if dictionary_response.status_code == config.INTERNAL_ERROR:
-            raise api_internal_error("The API returned a 500 error")
-    al.add_text(response, response.request.url)
+            raise api_internal_error(error)
 
+    al.add_text(response, response.request.url)
     al.build_chart(words, config.WORD.capitalize(), config.SCORE.capitalize(), "Datamuse Words")
-    al.build_chart(valid_words, "name", "description", "Valid Dictionary Words")
+    al.build_chart(valid_words, config.NAME, config.DESCRIPTION, "Valid Dictionary Words")

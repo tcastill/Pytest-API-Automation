@@ -5,8 +5,6 @@ from tabulate import tabulate
 
 
 class Allure:
-    def __init__(self):
-        pass
 
     @staticmethod
     def add_text(data, request_url):
