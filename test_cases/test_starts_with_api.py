@@ -30,13 +30,13 @@ def set_up():
 
 @pytest.mark.sw
 @allure.title("API Stars With Query")
-@pytest.mark.parametrize("test_word, error", [("t??k", "The API returned a 500 error"),
-                                              ("pa?r", "The API returned a 500 error"),
-                                              ("pa??", "The API returned a 500 error"),
-                                              ("?aI?", "The API returned a 500 error"),
-                                              ("l?op", "The API returned a 500 error"),
-                                              ])
-def test_starts_with(set_up, test_word, error):
+@pytest.mark.parametrize("test_word, blank_value", [("t??k", ""),
+                                                    ("pa?r", ""),
+                                                    ("pa??", ""),
+                                                    ("?aI?", ""),
+                                                    ("l?op", ""),
+                                                    ])
+def test_starts_with(set_up, test_word, blank_value):
     response = requests.get(
         f"{config.BASE_URL}{config.SPELLED_WITH_FILTER}{test_word}")
     response_body = response.json()
@@ -56,7 +56,6 @@ def test_starts_with(set_up, test_word, error):
             assert first == test_word[0], "First letter did not start with the correct query"
         if test_word[-1] != '?':
             assert fourth == test_word[-1], "Last letter did not end with with the correct query"
-        # assert final_word.isalnum(), "The letters must be valid characters"
 
         characters = config.SPECIAL_CHARACTERS
         for character in characters:
