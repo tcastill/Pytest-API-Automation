@@ -3,8 +3,8 @@ import pytest
 import allure
 import requests
 
-from tabulate import tabulate
 from config import config_vars as config
+from test_cases.allure_report import Allure as al
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -18,6 +18,10 @@ def set_up():
     yield
     ...  # tear down
     logger.info("Tests has completed")
+
+
+def api_internal_error(exception):
+    pass
 
 
 @pytest.mark.sw
@@ -43,30 +47,10 @@ def test_starts_with(set_up):
 
         dictionary_response = requests.get(f"{config.DICTIONARY_URI}{word}")
         if dictionary_response.status_code == config.SUCCESSFUL:
-            valid_words.append(word)
+            valid_words.append([word, dictionary_response.json()[0]['meanings'][0]['definitions'][0]['definition']])
+        if dictionary_response.status_code == config.INTERNAL_ERROR:
+            raise api_internal_error("The API returned a 500 error")
+    al.add_text(response, response.request.url)
 
-    build_chart(words)
-    print(valid_words)
-    allure.attach(
-        ' '.join(map(str, valid_words)),
-        'Valid Words',
-        attachment_type=allure.attachment_type.TEXT,
-        extension=config.TXT_TYPE)
-
-
-def build_chart(data):
-    col_names = [config.WORD.capitalize(), config.SCORE.capitalize()]
-    allure.attach(
-        tabulate(data, headers=col_names),
-        'Chart',
-        attachment_type=allure.attachment_type.TEXT,
-        extension=config.TXT_TYPE)
-
-
-def allure_add_text(data):
-    allure.attach(
-        body=data.text.encode(config.UTF8),
-        name=f'Request URL'
-             f'{data.request.url}',
-        attachment_type=allure.attachment_type.TEXT,
-        extension=config.TXT_TYPE)
+    al.build_chart(words, config.WORD.capitalize(), config.SCORE.capitalize(), "Datamuse Words")
+    al.build_chart(valid_words, "name", "description", "Valid Dictionary Words")

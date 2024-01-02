@@ -9,6 +9,8 @@ TEST_SKIP = True
 APPLICATION_JSON = 'application/json'
 CONTENT_TYPE = 'Content-Type'
 TXT_TYPE = 'txt'
+MEANINGS = 'meanings'
+DEFINITIONS = 'definitions'
 
 # ENDPOINTS
 DICTIONARY_URI = 'https://api.dictionaryapi.dev/api/v2/entries/en/'
@@ -24,6 +26,7 @@ SUGGESTIVE_FILTER = '/sug?s='
 SUCCESSFUL = 200
 REDIRECTION_ERROR = 300
 NOT_FOUND_ERROR = 404
+INTERNAL_ERROR = 500
 UTF8 = 'utf8'
 
 # REST CHARACTERISTICS
