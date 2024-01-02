@@ -35,4 +35,4 @@ NAME = 'name'
 DESCRIPTION = 'description'
 
 # Restricted Characters
-SPECIAL_CHARACTERS = '!@#$%^&*()-+?_=,<>/'
+SPECIAL_CHARACTERS = '!@#$%^&*()+?_=,<>/'
