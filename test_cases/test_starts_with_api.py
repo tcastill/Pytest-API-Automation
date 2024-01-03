@@ -1,8 +1,9 @@
+import allure
 import logging
 import pytest
-import allure
 import requests
 
+from apis.dictionary_api import Dictionary as dict
 from config import config_vars as config
 from test_cases.allure_report import Allure as al
 
@@ -35,6 +36,7 @@ def set_up():
                                                     ("pa??", ""),
                                                     ("?aI?", ""),
                                                     ("l?op", ""),
+                                                    ("????", "")
                                                     ])
 def test_starts_with(set_up, test_word, blank_value):
     response = requests.get(
@@ -61,12 +63,12 @@ def test_starts_with(set_up, test_word, blank_value):
         for character in characters:
             if character in word:
                 raise SpecialCharacterError(
-                    f'The string has a special character: {character}')
+                    f'The string has a special character: {character}'
+                )
 
         assert len(final_word) == len(
             test_word), "All letters did not return the same letter count"
-        dictionary_response = requests.get(
-            f"{config.DICTIONARY_URI}{final_word}")
+        dictionary_response = dict.get(final_word)
         if dictionary_response.status_code == config.SUCCESSFUL:
             dict_count += 1
             valid_words.append([final_word,

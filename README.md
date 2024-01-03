@@ -1,6 +1,13 @@
 # API Automation using Pytest
 
-This is the guide on how to use the automation for VA
+This automation will demonstrate how to utilize the Pytest and Python testing framework to automate two endpoints: https://dictionaryapi.dev/ and https://www.datamuse.com/api/.
+
+The dictionary api is used to cross-reference words suggested by the datamuse api to determine if they are legitimate. All of Datamuse's available endpoints will be covered by this code.
+
+- Means like 
+- Sounds Like
+- Spelled Like
+- Related Word
 
 ## Technology Stack
 
@@ -12,7 +19,7 @@ Python 3
 
 ## Packages required to run
 
-The following requirments must be installed for this framework to run. Run the command below.
+The following requirements must be installed for this framework to run. Run the command below.
 ```bash
 pip install -r requirements.txt
 ```
