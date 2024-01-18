@@ -1,8 +1,8 @@
 import allure
 import logging
 import pytest
-import requests
 
+from apis.datamuse_api import Datamuse as datamuse
 from apis.dictionary_api import Dictionary as dict
 from config import config_vars as config
 from test_cases.allure_report import Allure as al
@@ -39,24 +39,21 @@ def set_up():
                                                     ("????", "")
                                                     ])
 def test_starts_with(set_up, test_word, blank_value):
-    response = requests.get(
-        f"{config.BASE_URL}{config.SPELLED_WITH_FILTER}{test_word}")
-    response_body = response.json()
-    assert response.status_code == config.SUCCESSFUL
+    response = datamuse.spelled_with(test_word)
 
     words = []
     valid_words = []
     datamuse_count = 0
     dict_count = 0
     suggested_values = [[item_word[config.WORD],
-                         item_word[config.SCORE]] for item_word in response_body]
+                         item_word[config.SCORE]] for item_word in response.json()]
     for word, score in suggested_values:
         first, *other, fourth = final_word = word.lower().replace(" ", "")
         words.append([word, score])
         datamuse_count += 1
-        if test_word[0] != '?':
+        if test_word[0] != config.QUESTION_MARK:
             assert first == test_word[0], "First letter did not start with the correct query"
-        if test_word[-1] != '?':
+        if test_word[-1] != config.QUESTION_MARK:
             assert fourth == test_word[-1], "Last letter did not end with with the correct query"
 
         characters = config.SPECIAL_CHARACTERS

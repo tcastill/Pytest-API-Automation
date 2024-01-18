@@ -3,8 +3,8 @@ import pytest
 import allure
 import requests
 
-from tabulate import tabulate
 from config import config_vars as config
+from test_cases.allure_report import Allure as al
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -21,34 +21,28 @@ def set_up():
 
 
 @pytest.mark.sl
-def test_sounds_like(set_up):
-    query = 'jirraf'
+@allure.title("API Sounds Like Query")
+@pytest.mark.parametrize("query, sound_like", [("jirraf", "giraffe"),
+                                               ("Chocolate", "chocolate"),
+                                               ("kichken", "kickin"),
+                                                    ("MRBL", "marble"),
+                                                    ("iron mein", "ironman"),
+                                                    ("numatic", "pneumatic")
+                                                    ])
+def test_sounds_like(set_up, query, sound_like):
     response = requests.get(f"{config.BASE_URL}{config.SOUND_LIKE_FILTER}{query}")
     assert response.status_code == 200
     response_body = response.json()
     assert response.headers[
                config.CONTENT_TYPE] == config.APPLICATION_JSON, "Headers are not matching for application json"
-    assert response_body[0][config.WORD] == "giraffe", "Word did not match for the first entry"
+    assert response_body[0][config.WORD].lower() == sound_like, "Word did not match for the first entry"
     assert response_body[0][config.NUMBER_OF_SYLLABULS] >= 2, "Numbers did not match"
 
+    suggested_count = 0
     words = []
     for word in response_body:
         words.append([word[config.WORD], word[config.SCORE]])
+        suggested_count += 1
 
-    # define header names
-    col_names = [config.WORD.capitalize(), config.SCORE.capitalize()]
-
-    # display table
-    # print(tabulate(words, headers=col_names))
-    # allure.attach(tabulate(words, headers=col_names), name="CSV example", attachment_type=attachment_type.TEXT)
-    allure.attach(
-        tabulate(words, headers=col_names),
-        'Chart',
-        attachment_type=allure.attachment_type.TEXT,
-        extension='txt')
-    allure.attach(
-        body=response.text.encode('utf8'),
-        name=f'the thing'
-             f'{response.request.url}',
-        attachment_type=allure.attachment_type.TEXT,
-        extension='txt')
+    al.build_chart(words, config.WORD.capitalize(),
+                   config.SCORE.capitalize(), f"{suggested_count} total suggested sounds like words")

@@ -33,6 +33,7 @@ SCORE = 'score'
 NUMBER_OF_SYLLABULS = 'numSyllables'
 NAME = 'name'
 DESCRIPTION = 'description'
+QUESTION_MARK = '?'
 
 # Restricted Characters
 SPECIAL_CHARACTERS = '!@#$%^&*()+?_=,<>/'
