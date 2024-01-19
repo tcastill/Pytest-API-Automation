@@ -1,4 +1,4 @@
-# API Automation using Pytest
+# API Automation using Pytest and Python
 
 This automation will demonstrate how to utilize the Pytest and Python testing framework to automate two endpoints: https://dictionaryapi.dev/ and https://www.datamuse.com/api/.
 
