@@ -6,7 +6,7 @@ The dictionary api is used to cross-reference words suggested by the datamuse ap
 
 - Means like 
 - Sounds Like
-- Spelled Like
+- Starts With
 - Related Word
 
 ## Technology Stack

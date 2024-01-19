@@ -22,21 +22,20 @@ def set_up():
 
 @pytest.mark.sl
 @allure.title("API Sounds Like Query")
-@pytest.mark.parametrize("query, sound_like", [("jirraf", "giraffe"),
-                                               ("Chocolate", "chocolate"),
-                                               ("kichken", "kickin"),
-                                               ("MRBL", "marble"),
-                                               ("iron mein", "ironman"),
-                                               ("numatic", "pneumatic")
+@pytest.mark.parametrize("query, sound_like", [("used+to+express+reflection", "reflect"),
+                                               ("tears", "crying"),
+                                               ("lay%20in+bed", "sleep"),
+                                               ("cleaning%20clothes", "laundry"),
+                                               ("barking+animal", "dog"),
+                                               ("putting%20away%20money%20in%20the%20bank", "deposit")
                                                ])
-def test_sounds_like(set_up, query, sound_like):
-    response = requests.get(f"{config.BASE_URL}{config.SOUND_LIKE_FILTER}{query}")
+def test_means_like(set_up, query, sound_like):
+    response = requests.get(f"{config.BASE_URL}{config.MEANING_FILTER}{query}")
     assert response.status_code == 200
     response_body = response.json()
     assert response.headers[
                config.CONTENT_TYPE] == config.APPLICATION_JSON, "Headers are not matching for application json"
     assert response_body[0][config.WORD].lower() == sound_like, "Word did not match for the first entry"
-    assert response_body[0][config.NUMBER_OF_SYLLABULS] >= 2, "Numbers did not match"
 
     suggested_count = 0
     words = []
